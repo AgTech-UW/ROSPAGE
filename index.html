@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROS2 Course — UofW</title>
+  <style>
+    /* nothing fancy */
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #222;
+      background: #fafaf7;
+    }
+
+    h1 {
+      font-size: 1.6em;
+      border-bottom: 2px solid #333;
+      padding-bottom: 6px;
+      margin-bottom: 4px;
+    }
+
+    .logo {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 24px;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-top: 0;
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.15em;
+      margin-top: 36px;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+
+    a { color: #1a5276; }
+    a:visited { color: #6c3483; }
+    a:hover { color: #c0392b; }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .file-size {
+      color: #888;
+      font-size: 0.85em;
+    }
+
+    /* submission form */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: bold;
+      font-size: 0.95em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    input[type="file"] {
+      font-family: inherit;
+      font-size: 0.95em;
+      padding: 6px 8px;
+      border: 1px solid #aaa;
+      background: #fff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    select { width: auto; min-width: 200px; }
+
+    input[type="file"] {
+      border: none;
+      padding: 4px 0;
+    }
+
+    button[type="submit"] {
+      font-family: inherit;
+      font-size: 0.95em;
+      padding: 7px 20px;
+      background: #1a5276;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #154360;
+    }
+
+    .note {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 36px 0;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.8em;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="https://www.uwinnipeg.ca/branding/images/logos/uw-logo-horiz-rgb-black.png"
+       alt="University of Winnipeg"
+       class="logo">
+
+  <h1>Introduction to ROS2</h1>
+  <p class="subtitle">University of Winnipeg &mdash; Winter 2026</p>
+
+  <p>
+    Welcome to the course page. Below you'll find lecture slides,
+    lab handouts, and the assignment submission form.
+    Check back regularly for updates.
+  </p>
+
+  <h2>Course Materials</h2>
+  <ul>
+    <li><a href="pdfs/syllabus.pdf">Course Syllabus</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lecture01-intro.pdf">Lecture 1 — Introduction to ROS2</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lecture02-nodes-topics.pdf">Lecture 2 — Nodes &amp; Topics</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lecture03-services-actions.pdf">Lecture 3 — Services &amp; Actions</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lecture04-launch-params.pdf">Lecture 4 — Launch Files &amp; Parameters</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lab01-setup.pdf">Lab 1 — Environment Setup</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lab02-turtlesim.pdf">Lab 2 — Turtlesim Exercises</a> <span class="file-size">(PDF)</span></li>
+  </ul>
+  <p class="note">
+    Right-click &rarr; "Save link as" to download.
+    More materials will be posted as the term progresses.
+  </p>
+
+  <hr>
+
+  <h2>Submit an Assignment</h2>
+
+  <!--
+    This form uses Formspree (https://formspree.io) so it works
+    on a static GitHub Pages site with no backend.
+
+    To set it up:
+    1. Go to formspree.io, sign up (free tier is fine)
+    2. Create a new form, copy the form ID
+    3. Replace YOUR_FORM_ID below with the actual ID
+
+    File uploads are supported on Formspree's free plan.
+  -->
+  <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required placeholder="Jane Doe">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required placeholder="doej@myuwinnnipeg.ca">
+    </div>
+
+    <div class="form-group">
+      <label for="assignment">Assignment</label>
+      <select id="assignment" name="assignment" required>
+        <option value="" disabled selected>— choose —</option>
+        <option value="assignment1">Assignment 1</option>
+        <option value="assignment2">Assignment 2</option>
+        <option value="assignment3">Assignment 3</option>
+        <option value="assignment4">Assignment 4</option>
+        <option value="final-project">Final Project</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="file">Upload your file</label>
+      <input type="file" id="file" name="file" required>
+      <p class="note">ZIP or PDF preferred. Max 10 MB on the free Formspree plan.</p>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <hr>
+
+  <footer>
+    Questions? Email the instructor at
+    <a href="mailto:ge.dyck@uwinnipeg.ca">ge.dyck@uwinnipeg.ca</a>.
+  </footer>
+
+</body>
+</html>
