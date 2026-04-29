@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROS2 Course — UofW</title>
   <style>
-    /* nothing fancy */
     body {
       font-family: Georgia, "Times New Roman", serif;
       max-width: 680px;
@@ -136,20 +135,19 @@
   <p class="subtitle">University of Winnipeg &mdash; Winter 2026</p>
 
   <p>
-    Welcome to the course page. Below you'll find lecture slides,
-    lab handouts, and the assignment submission form.
+    Welcome to the course page. Below you'll find lab handouts
+    and the weekly dossier submission form.
     Check back regularly for updates.
   </p>
 
-  <h2>Course Materials</h2>
+  <h2>Lab Handouts</h2>
   <ul>
     <li><a href="pdfs/syllabus.pdf">Course Syllabus</a> <span class="file-size">(PDF)</span></li>
-    <li><a href="pdfs/lecture01-intro.pdf">Lecture 1 — Introduction to ROS2</a> <span class="file-size">(PDF)</span></li>
-    <li><a href="pdfs/lecture02-nodes-topics.pdf">Lecture 2 — Nodes &amp; Topics</a> <span class="file-size">(PDF)</span></li>
-    <li><a href="pdfs/lecture03-services-actions.pdf">Lecture 3 — Services &amp; Actions</a> <span class="file-size">(PDF)</span></li>
-    <li><a href="pdfs/lecture04-launch-params.pdf">Lecture 4 — Launch Files &amp; Parameters</a> <span class="file-size">(PDF)</span></li>
     <li><a href="pdfs/lab01-setup.pdf">Lab 1 — Environment Setup</a> <span class="file-size">(PDF)</span></li>
     <li><a href="pdfs/lab02-turtlesim.pdf">Lab 2 — Turtlesim Exercises</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lab03-nodes-topics.pdf">Lab 3 — Nodes &amp; Topics</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lab04-services-actions.pdf">Lab 4 — Services &amp; Actions</a> <span class="file-size">(PDF)</span></li>
+    <li><a href="pdfs/lab05-launch-params.pdf">Lab 5 — Launch Files &amp; Parameters</a> <span class="file-size">(PDF)</span></li>
   </ul>
   <p class="note">
     Right-click &rarr; "Save link as" to download.
@@ -158,20 +156,14 @@
 
   <hr>
 
-  <h2>Submit an Assignment</h2>
+  <h2>Submit Weekly Dossier</h2>
 
-  <!--
-    This form uses Formspree (https://formspree.io) so it works
-    on a static GitHub Pages site with no backend.
+  <p>
+    Each week, submit a screenshot of your completed lab goal
+    along with a brief description. Upload as a single PDF.
+  </p>
 
-    To set it up:
-    1. Go to formspree.io, sign up (free tier is fine)
-    2. Create a new form, copy the form ID
-    3. Replace YOUR_FORM_ID below with the actual ID
-
-    File uploads are supported on Formspree's free plan.
-  -->
-  <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" enctype="multipart/form-data">
+  <form action="https://formspree.io/f/xkokdvez" method="POST" enctype="multipart/form-data">
 
     <div class="form-group">
       <label for="name">Name</label>
@@ -180,25 +172,30 @@
 
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required placeholder="doej@myuwinnnipeg.ca">
+      <input type="email" id="email" name="email" required placeholder="doej@myuwinnipeg.ca">
     </div>
 
     <div class="form-group">
-      <label for="assignment">Assignment</label>
-      <select id="assignment" name="assignment" required>
+      <label for="week">Week</label>
+      <select id="week" name="week" required>
         <option value="" disabled selected>— choose —</option>
-        <option value="assignment1">Assignment 1</option>
-        <option value="assignment2">Assignment 2</option>
-        <option value="assignment3">Assignment 3</option>
-        <option value="assignment4">Assignment 4</option>
-        <option value="final-project">Final Project</option>
+        <option value="week1">Week 1</option>
+        <option value="week2">Week 2</option>
+        <option value="week3">Week 3</option>
+        <option value="week4">Week 4</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="file">Upload your file</label>
-      <input type="file" id="file" name="file" required>
-      <p class="note">ZIP or PDF preferred. Max 10 MB on the free Formspree plan.</p>
+      <label for="file">Dossier</label>
+      <input type="file" id="file" name="file" required accept="image/*,.pdf">
+      <p class="note">PDF Only. Max 10 MB.</p>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Brief description</label>
+      <textarea id="notes" name="notes" rows="3" placeholder="What did you accomplish this week?"
+        style="font-family:inherit;font-size:0.95em;padding:6px 8px;border:1px solid #aaa;width:100%;box-sizing:border-box;resize:vertical;"></textarea>
     </div>
 
     <button type="submit">Submit</button>
