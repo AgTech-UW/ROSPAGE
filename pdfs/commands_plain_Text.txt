@@ -86,7 +86,6 @@ PART 5: DEV CONTAINER -- devcontainer.json EDIT
   "image": "your-existing-image",
   "runArgs": ["--network=host"],
   "remoteEnv": {
-    "ROS_DOMAIN_ID": "5",
     "RMW_IMPLEMENTATION": "rmw_cyclonedds_cpp"
   }
 }
@@ -163,7 +162,6 @@ sudo apt install -y ros-humble-desktop python3-colcon-common-extensions \
 # Source ROS in every new shell (CHANGE THE 5 to your domain ID)
 echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
 echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> ~/.bashrc
-echo 'export ROS_DOMAIN_ID=5' >> ~/.bashrc
 source ~/.bashrc
 
 # Initialize rosdep
