@@ -138,35 +138,27 @@ wsl --install -d Ubuntu-22.04
 
 
 # --- Step 2: Install ROS 2 Humble (run inside WSL Ubuntu) ---
+# Check locale first — if this shows UTF-8 you can skip the locale block entirely
+locale
 
-# Set locale
-sudo apt update && sudo apt install -y locales
-sudo locale-gen en_US en_US.UTF-8
-sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-# Add ROS 2 apt repository
-sudo apt install -y software-properties-common curl gnupg lsb-release
+# Add ROS repo
+sudo apt update
+sudo apt install -y curl gnupg
 sudo add-apt-repository universe
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
     -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
     | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-# Install ROS Humble + dev tools + Cyclone
+# Install
 sudo apt update
 sudo apt install -y ros-humble-desktop python3-colcon-common-extensions \
-    python3-rosdep python3-vcstool python3-pip \
-    ros-humble-rmw-cyclonedds-cpp
+    python3-pip ros-humble-rmw-cyclonedds-cpp
 
-# Source ROS in every new shell (CHANGE THE 5 to your domain ID)
+# Make every new shell ROS-aware and Cyclone-aware
 echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
 echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> ~/.bashrc
 source ~/.bashrc
-
-# Initialize rosdep
-sudo rosdep init || true
-rosdep update
 
 
 # --- Step 3: Lab dependencies ---
