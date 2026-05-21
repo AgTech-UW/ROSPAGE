@@ -1,0 +1,246 @@
+==============================================================================
+ROS2 WSL2 FIX -- COPY-PASTE COMMAND SHEET
+==============================================================================
+Follow the main PDF for context. This file is just the commands so you don't
+have to retype them. Sections match the PDF.
+
+Lines starting with # are comments -- don't paste those.
+Replace anything in <angle brackets> with your actual value.
+
+==============================================================================
+PRE-FIX CHECKS (run these first)
+==============================================================================
+
+# Windows version (need 23H2 or newer)
+winver
+
+# WSL version (need 2.0.0 or newer)
+wsl --version
+
+# Check for stale ROS env vars in WSL
+echo "LOCALHOST_ONLY: $ROS_LOCALHOST_ONLY"
+unset ROS_LOCALHOST_ONLY
+
+
+==============================================================================
+PART 1: .WSLCONFIG FILE
+==============================================================================
+
+# Open the config file in Notepad (run in PowerShell, NOT admin)
+notepad $env:USERPROFILE\.wslconfig
+
+# --- PASTE THIS EXACTLY INTO NOTEPAD, THEN SAVE ---
+
+[wsl2]
+networkingMode=mirrored
+firewall=false
+localhostForwarding=true
+dnsTunneling=true
+
+[experimental]
+hostAddressLoopback=true
+
+# --- END OF FILE CONTENT ---
+
+
+==============================================================================
+PART 2: HYPER-V FIREWALL ALLOW (RUN IN POWERSHELL AS ADMIN)
+==============================================================================
+
+Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow
+
+
+==============================================================================
+PART 3: RESTART WSL
+==============================================================================
+
+# In PowerShell (any kind)
+wsl --shutdown
+
+# Then wait 10 seconds, restart Docker Desktop from the tray,
+# then open a fresh WSL terminal.
+
+
+==============================================================================
+PART 4: SANITY CHECK (in WSL terminal, BEFORE touching Docker)
+==============================================================================
+
+# Should show your Windows LAN IP, not 172.x.x.x
+ip addr show
+
+# (Optional, if ROS is installed in WSL)
+ros2 multicast receive
+# And from the robot or another Linux machine:
+ros2 multicast send
+
+
+==============================================================================
+PART 5: DEV CONTAINER -- devcontainer.json EDIT
+==============================================================================
+
+# --- PASTE THIS INTO .devcontainer/devcontainer.json ---
+# Replace 5 with your group's ROS_DOMAIN_ID (matches your robot number).
+
+{
+  "name": "agtech_ros2",
+  "image": "your-existing-image",
+  "runArgs": ["--network=host"],
+  "remoteEnv": {
+    "ROS_DOMAIN_ID": "5",
+    "RMW_IMPLEMENTATION": "rmw_cyclonedds_cpp"
+  }
+}
+
+# --- END ---
+
+# Then in VS Code:
+#   Ctrl+Shift+P -> "Dev Containers: Rebuild Container"
+
+
+==============================================================================
+PART 5: INSIDE THE DEV CONTAINER -- INSTALL LAB DEPS
+==============================================================================
+
+# Lab 10 needs pynput for the keyboard deadman
+pip install pynput
+
+# If pip complains about externally-managed environment, use this instead:
+pip install pynput --break-system-packages
+
+# Make sure Cyclone is installed
+sudo apt update
+sudo apt install -y ros-humble-rmw-cyclonedds-cpp
+
+
+==============================================================================
+PART 5: VERIFY (inside dev container)
+==============================================================================
+
+# Both should print the values from devcontainer.json
+echo $ROS_DOMAIN_ID
+echo $RMW_IMPLEMENTATION
+
+# Restart the daemon and list topics
+pkill -f ros2_daemon
+ros2 topic list
+
+# You should see /cmd_vel, /odom, /tractor/gps (when the God Node is running),
+# and a long list of others.
+
+
+==============================================================================
+PART 6: PLAN B -- NATIVE WSL INSTALL
+==============================================================================
+Only do this if Part 5 won't cooperate.
+
+
+# --- Step 1: Install Ubuntu in WSL (skip if already installed) ---
+wsl --install -d Ubuntu-22.04
+
+
+# --- Step 2: Install ROS 2 Humble (run inside WSL Ubuntu) ---
+
+# Set locale
+sudo apt update && sudo apt install -y locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Add ROS 2 apt repository
+sudo apt install -y software-properties-common curl gnupg lsb-release
+sudo add-apt-repository universe
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+    -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
+    | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# Install ROS Humble + dev tools + Cyclone
+sudo apt update
+sudo apt install -y ros-humble-desktop python3-colcon-common-extensions \
+    python3-rosdep python3-vcstool python3-pip \
+    ros-humble-rmw-cyclonedds-cpp
+
+# Source ROS in every new shell (CHANGE THE 5 to your domain ID)
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> ~/.bashrc
+echo 'export ROS_DOMAIN_ID=5' >> ~/.bashrc
+source ~/.bashrc
+
+# Initialize rosdep
+sudo rosdep init || true
+rosdep update
+
+
+# --- Step 3: Lab dependencies ---
+pip install pynput numpy matplotlib
+
+
+# --- Step 4: Move your code into WSL ---
+
+# OPTION A: clone from Git (recommended)
+cd ~
+mkdir -p ros2_ws/src
+cd ros2_ws/src
+git clone <your_repo_url> agtech_ros2
+
+# OPTION B: copy out from old dev container first, then into WSL
+# Inside the old dev container:
+cp -r /workspaces/agtech_ros2 /mnt/c/Users/<you>/Desktop/agtech_backup
+# Then in WSL (NOT in the container):
+mkdir -p ~/ros2_ws/src
+cp -r /mnt/c/Users/<you>/Desktop/agtech_backup ~/ros2_ws/src/agtech_ros2
+
+
+# --- Step 5: Symlink so /workspaces/agtech_ros2 still works ---
+sudo mkdir -p /workspaces
+sudo ln -s ~/ros2_ws/src/agtech_ros2 /workspaces/agtech_ros2
+
+
+# --- Step 6: Build ---
+cd ~/ros2_ws
+colcon build --symlink-install
+echo 'source ~/ros2_ws/install/setup.bash' >> ~/.bashrc
+source ~/.bashrc
+
+
+# --- Step 7: Open VS Code with the WSL extension ---
+# Install the "WSL" extension in VS Code first (not "Dev Containers"!)
+code ~/ros2_ws
+
+
+# --- Step 8: Verify ---
+pkill -f ros2_daemon
+ros2 topic list
+
+
+==============================================================================
+DEBUGGING / COMMON RESCUE COMMANDS
+==============================================================================
+
+# Daemon is hung? Use this instead of "ros2 daemon stop"
+pkill -f ros2_daemon
+
+# Check what's set in this terminal
+echo "DOMAIN: $ROS_DOMAIN_ID"
+echo "RMW:    $RMW_IMPLEMENTATION"
+echo "LOCAL:  $ROS_LOCALHOST_ONLY"
+
+# Multicast test (open these in two terminals on different machines)
+# Listener:
+ros2 multicast receive
+# Sender:
+ros2 multicast send
+
+# Can you even reach the robot?
+ping <robot_ip>
+
+# What IP is WSL actually using? (should match Windows ipconfig)
+ip addr show
+
+# Restart everything (from PowerShell)
+wsl --shutdown
+# Then restart Docker Desktop from the tray.
+
+==============================================================================
+END
+==============================================================================
